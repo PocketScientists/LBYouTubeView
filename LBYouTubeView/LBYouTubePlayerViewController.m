@@ -59,6 +59,21 @@
         [self.delegate youTubePlayerViewController:self didSuccessfullyExtractYouTubeURL:videoURL];
     }
     
+    NSURL *candidateURL = videoURL;
+    if (candidateURL && candidateURL.scheme && candidateURL.host) {
+                    if ([self.delegate respondsToSelector:@selector(youTubePlayerViewController:didSuccessfullyExtractYouTubeURL:)]) {
+                            [self.delegate youTubePlayerViewController:self didSuccessfullyExtractYouTubeURL:videoURL];
+                    }
+        
+                    self.moviePlayer.contentURL = videoURL;
+                    [self.moviePlayer play];
+    } else {
+            NSLog(@"extracted URL is buggy: %@", videoURL);
+            if ([self.delegate respondsToSelector:@selector(youTubePlayerViewController:failedExtractingYouTubeURLWithError:)]) {
+                    [self.delegate youTubePlayerViewController:self failedExtractingYouTubeURLWithError:nil];
+            }
+    }
+    
     self.moviePlayer.contentURL = videoURL;
     [self.moviePlayer play];
 }
